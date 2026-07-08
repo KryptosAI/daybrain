@@ -3,6 +3,7 @@
   "name": "DayBrain — AI Memory Engine",
   "version": "0.2.0",
   "description": "Private local memory for your AI. Gives Claude and ChatGPT context about your workday — no cloud required.",
+  "homepage_url": "https://github.com/KryptosAI/daybrain",
   "permissions": ["storage", "tabs", "scripting", "alarms"],
   "host_permissions": [
     "https://claude.ai/*",

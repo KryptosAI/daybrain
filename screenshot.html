@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; display: flex; height: 100vh; overflow: hidden; }
+.main { flex: 1; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.main h1 { font-size: 28px; color: #58a6ff; margin-bottom: 8px; }
+.main p { color: #8b949e; font-size: 14px; max-width: 400px; text-align: center; }
+.sidebar {
+  width: 340px; background: #161b22; border-left: 1px solid #30363d;
+  display: flex; flex-direction: column; font-size: 13px; color: #c9d1d9;
+}
+.sb-header { padding: 16px; border-bottom: 1px solid #30363d; display: flex; align-items: center; justify-content: space-between; }
+.sb-header span { font-weight: 700; font-size: 16px; }
+.sb-body { flex: 1; overflow-y: auto; padding: 16px; }
+.sb-stat { margin-bottom: 16px; }
+.sb-stat .value { font-size: 24px; font-weight: 700; color: #667eea; }
+.sb-stat .label { font-size: 11px; color: #8b949e; }
+.sb-app { margin-bottom: 6px; }
+.sb-app .bar { height: 6px; background: #21262d; border-radius: 3px; margin-top: 4px; }
+.sb-app .fill { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #667eea, #764ba2); }
+.sb-app .row { display: flex; justify-content: space-between; font-size: 12px; }
+.sb-section { font-weight: 600; margin-bottom: 8px; color: #8b949e; margin-top: 16px; }
+.sb-insight { padding: 10px; background: #21262d; border-radius: 8px; margin-bottom: 8px; }
+.sb-insight .title { font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+.sb-insight .desc { font-size: 11px; color: #8b949e; }
+.sb-insight .action { font-size: 11px; color: #667eea; margin-top: 4px; }
+.sb-footer { padding: 16px; border-top: 1px solid #30363d; }
+.sb-btn {
+  width: 100%; padding: 10px; border: none; border-radius: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white; font-weight: 600; font-size: 14px; cursor: pointer;
+  text-align: center;
+}
+.badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-left: 4px; }
+.badge-high { background: #238636; color: #fff; }
+.badge-med { background: #9e6a03; color: #fff; }
+.badge-pct { color: #667eea; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="main">
+  <div style="font-size: 48px; margin-bottom: 16px;">🧠</div>
+  <h1>DayBrain</h1>
+  <p style="margin-bottom: 24px;">Private local memory for your AI. Open the sidebar → to see your daily context.</p>
+  <div style="display: flex; gap: 8px;">
+    <span style="background: #21262d; padding: 6px 12px; border-radius: 6px; font-size: 12px;">npx daybrain</span>
+    <span style="color: #8b949e; font-size: 12px; padding: 6px 0;">← one command</span>
+  </div>
+</div>
+<div class="sidebar">
+  <div class="sb-header">
+    <span>🧠 DayBrain</span>
+    <span style="color: #8b949e; font-size: 18px; cursor: pointer;">✕</span>
+  </div>
+  <div class="sb-body">
+    <div class="sb-stat">
+      <div class="value">126 min</div>
+      <div class="label">active today (2.1 hours)</div>
+    </div>
+    
+    <div class="sb-section">Top Apps</div>
+    <div class="sb-app"><div class="row"><span>Cursor</span><span>52 min</span></div><div class="bar"><div class="fill" style="width:65%"></div></div></div>
+    <div class="sb-app"><div class="row"><span>Slack</span><span>24 min</span></div><div class="bar"><div class="fill" style="width:30%"></div></div></div>
+    <div class="sb-app"><div class="row"><span>GitHub</span><span>18 min</span></div><div class="bar"><div class="fill" style="width:22%"></div></div></div>
+    <div class="sb-app"><div class="row"><span>Linear</span><span>14 min</span></div><div class="bar"><div class="fill" style="width:18%"></div></div></div>
+    <div class="sb-app"><div class="row"><span>Notion</span><span>10 min</span></div><div class="bar"><div class="fill" style="width:12%"></div></div></div>
+
+    <div style="margin: 16px 0; padding: 10px; background: #21262d; border-radius: 8px;">
+      <div style="font-weight: 600; color: #8b949e; margin-bottom: 4px;">Context Switches</div>
+      <div style="font-size: 20px; font-weight: 700;">87 <span style="font-size: 12px; color: #d29922;">🟡 Moderate</span></div>
+    </div>
+
+    <div class="sb-section">Detected Commitments</div>
+    <div class="sb-insight">
+      <div class="title">🤝 "I will deploy the billing fix by Friday" <span class="badge-pct">80%</span></div>
+      <div class="desc">Detected in Slack #engineering. This may need a task in Linear.</div>
+      <div class="action">→ Review and create a task if needed</div>
+    </div>
+    <div class="sb-insight">
+      <div class="title">🤝 "Sent the demo slides by EOD" <span class="badge-pct">85%</span></div>
+      <div class="desc">Detected in Slack #general. No corresponding task found.</div>
+      <div class="action">→ Create a follow-up task</div>
+    </div>
+    <div class="sb-insight">
+      <div class="title">👀 Frequent Twitter visits <span class="badge-pct">70%</span></div>
+      <div class="desc">12 visits averaging 22 seconds each. Possible distraction pattern.</div>
+      <div class="action">→ Consider time-blocking or focus mode</div>
+    </div>
+
+    <div class="sb-section">Baseline Anomalies</div>
+    <div class="sb-insight">
+      <div class="title">🔴 Significantly less active than usual</div>
+      <div class="desc">2.1h today vs 4.8h avg over last 7 days.</div>
+    </div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-btn">📋 Inject Context into Chat</div>
+    <div style="text-align: center; color: #484f58; font-size: 10px; margin-top: 6px;">via DayBrain — local AI memory engine</div>
+  </div>
+</div>
+</body>
+</html>
