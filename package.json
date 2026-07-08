@@ -1,0 +1,58 @@
+{
+  "name": "daybrain",
+  "version": "0.3.0",
+  "description": "Private local memory for your AI. Gives Claude, Cursor, and ChatGPT context about your workday — no cloud required.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "bin": {
+    "daybrain": "./bin/daybrain.js"
+  },
+  "files": [
+    "dist/",
+    "bin/",
+    "watcher.py"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "tsx test.ts",
+    "onboard": "tsx src/onboard.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "ai",
+    "memory",
+    "context",
+    "local",
+    "privacy",
+    "claude",
+    "cursor",
+    "chatgpt",
+    "activity-tracking",
+    "productivity",
+    "insights"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daybrainhq/daybrain"
+  },
+  "homepage": "https://github.com/daybrainhq/daybrain",
+  "author": "DayBrain"
+}
