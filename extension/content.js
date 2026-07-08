@@ -277,6 +277,35 @@ if (document.readyState === 'loading') {
   inject();
 }
 
+// Passive auto-inject: if Claude/ChatGPT page loads and conversation is empty, inject context
+setTimeout(autoInject, 3000);
+
+async function autoInject() {
+  try {
+    const hasMessages = document.querySelector('[data-message-author-role], .prose, .message, [class*="message"], [class*="conversation"]');
+
+    // On first load with no conversation history, inject passively
+    if (!hasMessages || document.querySelectorAll('[data-message-author-role]').length === 0) {
+      const res = await fetch(`${API}/context`);
+      const data = await res.json();
+      if (!data.text || data.total_minutes === 0) return;
+
+      // For ChatGPT: use the prompt textarea
+      // For Claude: use the contenteditable
+      setTimeout(() => {
+        const el = findChatInput();
+        if (el) {
+          const prefix = 'Here is what I worked on today:\n\n';
+          el.value = prefix + data.text;
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+          el.focus();
+          showToast('🧠 Context loaded — just start talking');
+        }
+      }, 1500);
+    }
+  } catch {}
+}
+
 // Toggle from popup
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.action === 'toggle-sidebar') toggle();
