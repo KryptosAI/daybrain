@@ -62,6 +62,15 @@ export function startHttpServer(port?: number): void {
     }
   });
 
+  httpServer.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`[daybrain] HTTP port ${listenPort} in use — another DayBrain is already running. Extension will use existing server.`);
+      httpServer = null;
+    } else {
+      console.error(`[daybrain] HTTP server error:`, err.message);
+    }
+  });
+
   httpServer.listen(listenPort, '127.0.0.1', () => {
     console.error(`[daybrain] HTTP API on http://127.0.0.1:${listenPort} (for browser extension)`);
   });
@@ -69,14 +78,14 @@ export function startHttpServer(port?: number): void {
 
 export function stopHttpServer(): void {
   if (httpServer) {
-    httpServer.close();
+    try { httpServer.close(); } catch {}
     httpServer = null;
   }
 }
 
 function handleHealth(res: http.ServerResponse): void {
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify({ status: 'ok', version: '0.2.0' }));
+  res.end(JSON.stringify({ status: 'ok', version: '0.3.0' }));
 }
 
 async function handlePostEvents(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {

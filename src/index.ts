@@ -980,8 +980,10 @@ async function main(): Promise<void> {
     startScheduler();
   }
 
-  startHttpServer();
-  console.error(`[daybrain] Browser extension API on http://127.0.0.1:19840`);
+  try { startHttpServer(); } catch (err) {
+    console.error(`[daybrain] HTTP server failed to start:`, err instanceof Error ? err.message : String(err));
+  }
+  console.error(`[daybrain] Browser extension API on http://127.0.0.1:${19840}`);
 }
 
 if (require.main === module) {
