@@ -1,94 +1,95 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; display: flex; height: 100vh; overflow: hidden; }
-.main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.main .title { font-size: 26px; color: #58a6ff; margin-bottom: 6px; }
-.main .sub { color: #8b949e; font-size: 13px; }
-.panel {
-  position: fixed; bottom: 72px; right: 20px;
-  width: 310px; background: #1a1a2e; border: 1px solid #333; border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4); font-size: 12px; color: #c9d1d9;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+<html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#202124;height:100vh;display:flex;flex-direction:column}
+.top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:120px}
+.top .t{font-size:24px;color:#202124;margin-bottom:4px;font-weight:400}
+.top .s{color:#5f6368;font-size:14px}
+.chatbar{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  width:680px;background:#fff;border:1px solid #dadce0;border-radius:24px;
+  padding:8px 16px;display:flex;align-items:center;gap:8px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
 }
-.ph { padding: 12px 14px 10px; border-bottom: 1px solid #222; font-weight: 700; font-size: 13px; }
-.pb { padding: 12px 14px; }
-.sr { display: flex; gap: 6px; margin-bottom: 10px; }
-.st { flex: 1; background: #222; border-radius: 8px; padding: 8px; text-align: center; }
-.st .v { font-size: 16px; font-weight: 700; color: #667eea; }
-.st .l { font-size: 9px; color: #888; margin-top: 1px; }
-.ar { display: flex; align-items: center; margin-bottom: 3px; gap: 6px; }
-.ar .n { width: 65px; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ar .b { flex: 1; height: 4px; background: #222; border-radius: 2px; }
-.ar .f { height: 4px; border-radius: 2px; background: linear-gradient(90deg, #667eea, #764ba2); }
-.ar .t { font-size: 9px; color: #888; width: 28px; text-align: right; }
-.sl { font-size: 10px; font-weight: 600; color: #888; margin: 10px 0 6px; }
-.in { padding: 7px 9px; background: #222; border-radius: 7px; margin-bottom: 5px; font-size: 10px; }
-.in .ti { font-weight: 600; margin-bottom: 2px; }
-.in .de { color: #888; font-size: 9px; }
-.btn {
-  display: block; width: 100%; padding: 7px; border: 1px solid #333; border-radius: 7px;
-  background: transparent; color: #c9d1d9; font-size: 10px; cursor: pointer; text-align: center; margin-top: 6px;
+.chatbar input{flex:1;border:none;outline:none;font-size:15px;color:#202124}
+.chatbar input::placeholder{color:#80868b}
+.chatbar .send{color:#1a73e8;font-size:15px;cursor:pointer;font-weight:500;padding:4px 8px}
+.chatbar .send:hover{background:#f1f3f4;border-radius:8px}
+.db-inject{
+  background:none;border:none;cursor:pointer;font-size:15px;padding:2px 5px;
+  color:#5f6368;border-radius:4px;transition:background .15s
 }
-.btn.p { background: linear-gradient(135deg, #667eea, #764ba2); border: none; color: white; font-weight: 600; margin-top: 10px; }
-.fab {
-  position: fixed; bottom: 20px; right: 20px;
-  width: 40px; height: 40px; border-radius: 50%;
-  background: #1a1a2e; border: 1px solid #333;
-  color: #e0e0e0; font-size: 18px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+.db-inject:hover{background:#f1f3f4}
+.db-inject .mini-badge{
+  position:absolute;top:-2px;right:-2px;background:#1a73e8;color:#fff;
+  font-size:7px;font-weight:500;padding:1px 3px;border-radius:4px;line-height:10px
 }
-.fab .bdg {
-  position: absolute; top: -3px; right: -3px;
-  background: #667eea; color: white; font-size: 8px; font-weight: 700;
-  padding: 1px 4px; border-radius: 6px; line-height: 12px;
+.db-status{
+  position:fixed;bottom:0;left:0;right:0;padding:6px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;color:#80868b;border-top:1px solid #e8eaed
 }
-</style>
-</head>
-<body>
-<div class="main">
-  <img src="screenshot-icon.png" width="64" height="64" style="margin-bottom: 12px; border-radius: 14px;" />
-  <div class="title">DayBrain</div>
-  <div class="sub">Private local memory for your AI</div>
+.db-status .dot{width:6px;height:6px;border-radius:50%;background:#34a853;margin-right:4px}
+.db-status .pause{color:#1a73e8;cursor:pointer;padding:2px 6px}
+.db-status .pause:hover{background:#e8f0fe;border-radius:4px}
+.panel{
+  position:fixed;bottom:80px;right:16px;width:300px;background:#fff;
+  border:1px solid #dadce0;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.12);
+  overflow:hidden
+}
+.ph{padding:10px 14px;font-weight:500;font-size:13px;border-bottom:1px solid #e8eaed}
+.pb{padding:10px 14px 14px}
+.card{background:#f8f9fa;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:12px}
+.card .n{font-size:20px;font-weight:500;color:#1a73e8;line-height:1}
+.card .l{font-size:10px;color:#5f6368;margin-top:2px}
+.sl{font-size:10px;font-weight:500;color:#5f6368;letter-spacing:.3px;margin:2px 0 5px}
+.ins{padding:8px 10px;background:#f8f9fa;border-radius:8px;margin-bottom:4px;font-size:11px;line-height:1.4}
+.ins .t{font-weight:500}
+.ins .d{color:#5f6368;font-size:10px;margin-top:2px}
+.pill{display:inline-block;background:#e8f0fe;color:#1a73e8;font-size:9px;font-weight:500;padding:1px 5px;border-radius:6px;margin-left:4px}
+.btn{display:block;width:100%;padding:8px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:12px;font-weight:500;cursor:pointer;text-align:center;margin-top:8px}
+.btn:hover{box-shadow:0 1px 3px rgba(0,0,0,.12),0 2px 6px rgba(26,115,232,.25)}
+.btn.s{background:transparent;color:#1a73e8;margin-top:4px;font-size:11px}
+.btn.s:hover{background:#f1f3f4;box-shadow:none}
+</style></head><body>
+<div class="top">
+  <img src="screenshot-icon.png" width="48" height="48" style="border-radius:10px;margin-bottom:12px">
+  <div class="t">Good afternoon</div>
+  <div class="s">How can Claude help you today?</div>
 </div>
 
-<div class="fab"><img src="screenshot-icon.png" width="28" height="28" style="border-radius: 6px;" /><span class="bdg">126</span></div>
+<div class="chatbar">
+  <button class="db-inject" style="position:relative" title="Share your day with Claude">
+    <img src="screenshot-icon.png" width="20" height="20" style="border-radius:4px;vertical-align:-4px">
+    <span class="mini-badge" style="top:-5px;right:-5px">43</span>
+  </button>
+  <input placeholder="Ask anything…">
+  <span class="send">Send</span>
+</div>
+
+<div class="db-status">
+  <span><span class="dot"></span> Recording</span>
+  <span>DayBrain · 3 commitments · <span style="color:#1a73e8">43m active</span></span>
+  <span class="pause">Pause</span>
+</div>
 
 <div class="panel">
-  <div class="ph"><img src="screenshot-icon.png" width="18" height="18" style="border-radius: 4px; vertical-align: -3px; margin-right: 4px;" />DayBrain</div>
+  <div class="ph">Your day</div>
   <div class="pb">
-    <div class="sr">
-      <div class="st"><div class="v">126m</div><div class="l">active</div></div>
-      <div class="st"><div class="v">87</div><div class="l">switches</div></div>
-      <div class="st"><div class="v">3</div><div class="l">insights</div></div>
+    <div class="card">
+      <div style="flex:1;text-align:center"><div class="n">43m</div><div class="l">active</div></div>
+      <div style="flex:1;text-align:center"><div class="n">11</div><div class="l">switches</div></div>
+      <div style="flex:1;text-align:center"><div class="n">3</div><div class="l">caught</div></div>
     </div>
-
-    <div class="sl">Top apps</div>
-    <div class="ar"><span class="n">Cursor</span><div class="b"><div class="f" style="width:65%"></div></div><span class="t">52m</span></div>
-    <div class="ar"><span class="n">Slack</span><div class="b"><div class="f" style="width:30%"></div></div><span class="t">24m</span></div>
-    <div class="ar"><span class="n">GitHub</span><div class="b"><div class="f" style="width:22%"></div></div><span class="t">18m</span></div>
-
-    <div class="sl">Insights</div>
-    <div class="in">
-      <div class="ti">🤝 "I will deploy the billing fix by Friday" <span style="color:#667eea;font-size:9px">80%</span></div>
-      <div class="de">Detected in Slack #engineering.</div>
-    </div>
-    <div class="in">
-      <div class="ti">👀 Frequent Twitter visits <span style="color:#667eea;font-size:9px">70%</span></div>
-      <div class="de">12 visits, avg 22s each. Possible distraction.</div>
-    </div>
-    <div class="in">
-      <div class="ti">🤝 "Send demo slides by EOD" <span style="color:#667eea;font-size:9px">85%</span></div>
-      <div class="de">Detected in Slack #general. No task exists.</div>
-    </div>
-
-    <button class="btn p">📋 Inject context into chat</button>
-    <button class="btn">🔄 Refresh</button>
+    <div class="sl">TOP APPS</div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;color:#5f6368"><span>Cursor</span><span style="font-weight:500;color:#202124">21m</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;color:#5f6368"><span>Notion</span><span style="font-weight:500;color:#202124">8m</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;color:#5f6368"><span>GitHub</span><span style="font-weight:500;color:#202124">6m</span></div>
+    <div class="sl" style="margin-top:8px">THINGS YOU SAID</div>
+    <div class="ins"><div class="t">promised to review PR #43 by tomorrow<span class="pill">90%</span></div><div class="d">Detected in Slack #engineering</div></div>
+    <div class="ins"><div class="t">can you send the demo by EOD?<span class="pill">85%</span></div><div class="d">Detected in Slack #general. No task exists</div></div>
+    <div class="ins"><div class="t">will deploy the billing fix by Friday<span class="pill">80%</span></div><div class="d">Detected in Slack #engineering</div></div>
+    <button class="btn">Share with Claude</button>
   </div>
 </div>
-</body>
-</html>
+</body></html>
