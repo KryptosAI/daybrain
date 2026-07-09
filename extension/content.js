@@ -277,34 +277,54 @@ if (document.readyState === 'loading') {
   inject();
 }
 
-// Passive auto-inject: if Claude/ChatGPT page loads and conversation is empty, inject context
-setTimeout(autoInject, 3000);
+// --- Chat bar inject button ---
+function injectChatButton() {
+  if (document.getElementById('daybrain-chat-btn')) return;
 
-async function autoInject() {
-  try {
-    const hasMessages = document.querySelector('[data-message-author-role], .prose, .message, [class*="message"], [class*="conversation"]');
+  const btn = document.createElement('button');
+  btn.id = 'daybrain-chat-btn';
+  btn.innerHTML = '🧠';
+  btn.title = 'Share your day with the AI';
+  Object.assign(btn.style, {
+    background: 'transparent', border: 'none', cursor: 'pointer',
+    fontSize: '18px', padding: '4px', marginRight: '4px',
+    opacity: '0.7', transition: 'opacity 0.2s', borderRadius: '4px',
+    lineHeight: '1',
+  });
+  btn.addEventListener('mouseenter', () => { btn.style.opacity = '1'; });
+  btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.7'; });
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    await injectContext();
+  });
 
-    // On first load with no conversation history, inject passively
-    if (!hasMessages || document.querySelectorAll('[data-message-author-role]').length === 0) {
-      const res = await fetch(`${API}/context`);
-      const data = await res.json();
-      if (!data.text || data.total_minutes === 0) return;
-
-      // For ChatGPT: use the prompt textarea
-      // For Claude: use the contenteditable
-      setTimeout(() => {
-        const el = findChatInput();
-        if (el) {
-          const prefix = 'Here is what I worked on today:\n\n';
-          el.value = prefix + data.text;
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          el.focus();
-          showToast('🧠 Context loaded — just start talking');
-        }
-      }, 1500);
+  // Try to find the chat input area and prepend the button
+  const tryInject = () => {
+    // Claude.ai: the toolbar above the input
+    const claudeToolbar = document.querySelector('[class*="flex"][class*="items-center"]:has([contenteditable])');
+    if (claudeToolbar && !document.getElementById('daybrain-chat-btn')) {
+      const firstChild = claudeToolbar.firstChild;
+      if (firstChild) firstChild.before(btn);
+      return true;
     }
-  } catch {}
+    // ChatGPT: the area around the textarea
+    const gptArea = document.querySelector('#prompt-textarea')?.parentElement?.parentElement;
+    if (gptArea && !document.getElementById('daybrain-chat-btn')) {
+      const toolbar = gptArea.querySelector('[class*="flex"]');
+      if (toolbar) toolbar.prepend(btn);
+      return true;
+    }
+    return false;
+  };
+
+  if (!tryInject()) {
+    // DOM not ready yet, retry
+    setTimeout(() => { if (!tryInject()) setTimeout(tryInject, 2000); }, 1000);
+  }
 }
+
+setTimeout(injectChatButton, 2000);
+setTimeout(injectChatButton, 5000);
 
 // Toggle from popup
 chrome.runtime.onMessage.addListener((msg) => {

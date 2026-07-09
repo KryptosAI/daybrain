@@ -41,8 +41,11 @@
 <body>
   <h2>🧠 DayBrain</h2>
   <div id="stats"><div class="loading">Loading...</div></div>
-  <button class="btn" id="open-sidebar">Open Sidebar</button>
-  <button class="btn-small" id="toggle-settings" style="width:100%;margin-top:8px;">⚙ Settings</button>
+  <button class="btn" id="open-sidebar">Open Panel</button>
+  <div style="display:flex;gap:8px;margin-top:8px;">
+    <button class="btn-small" id="toggle-recording" style="flex:1;">⏸ Pause</button>
+    <button class="btn-small" id="toggle-settings-btn" style="flex:1;">⚙ Settings</button>
+  </div>
   <div class="settings-section" id="settings">
     <label>Sync URL (for cross-device):</label>
     <input type="text" id="sync-url" placeholder="http://192.168.1.100:19840" />

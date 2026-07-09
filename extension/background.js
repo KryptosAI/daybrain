@@ -89,6 +89,18 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 });
 
+let isPaused = false;
+
+chrome.storage.local.get(['daybrain_paused'], (result) => {
+  isPaused = result.daybrain_paused || false;
+});
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.action === 'toggle-recording') {
+    isPaused = msg.paused;
+  }
+});
+
 let tabTimers = {};
 
 function now() {
@@ -106,6 +118,7 @@ async function postEvent(event) {
 }
 
 async function onTabChange(tabId, url, title) {
+  if (isPaused) return;
   if (!url || url.startsWith('chrome://') || url.startsWith('chrome-extension://')) return;
   if (!title) return;
 
@@ -163,7 +176,8 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.alarms.create('flush-timers', { periodInMinutes: 0.5 });
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === 'flush-timers') {
+    if (alarm.name === 'flush-timers') {
+    if (isPaused) return;
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     for (const tab of tabs) {
       const prev = tabTimers[tab.id];

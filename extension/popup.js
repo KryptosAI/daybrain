@@ -69,9 +69,36 @@ document.getElementById('open-sidebar').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('toggle-settings').addEventListener('click', () => {
+document.getElementById('toggle-settings-btn').addEventListener('click', () => {
   document.getElementById('settings').classList.toggle('visible');
 });
+
+// Recording toggle
+(async () => {
+  const result = await chrome.storage.local.get(['daybrain_paused']);
+  updatePauseButton(result.daybrain_paused);
+})();
+
+document.getElementById('toggle-recording').addEventListener('click', async () => {
+  const result = await chrome.storage.local.get(['daybrain_paused']);
+  const paused = !result.daybrain_paused;
+  await chrome.storage.local.set({ daybrain_paused: paused });
+  updatePauseButton(paused);
+  chrome.runtime.sendMessage({ action: 'toggle-recording', paused });
+});
+
+function updatePauseButton(paused) {
+  const btn = document.getElementById('toggle-recording');
+  if (paused) {
+    btn.textContent = '▶ Record';
+    btn.style.borderColor = '#4caf50';
+    btn.style.color = '#4caf50';
+  } else {
+    btn.textContent = '⏸ Pause';
+    btn.style.borderColor = '#e74c3c';
+    btn.style.color = '#e74c3c';
+  }
+}
 
 document.getElementById('save-sync').addEventListener('click', async () => {
   const url = document.getElementById('sync-url').value.trim();
