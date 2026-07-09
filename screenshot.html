@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#202124;height:100vh;display:flex;flex-direction:column}
-.top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:120px}
-.top .greeting{font-size:24px;color:#202124;margin-bottom:4px;font-weight:400}
-.top .subtitle{color:#5f6368;font-size:14px}
-.chatbar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:680px;background:#fff;border:1px solid #dadce0;border-radius:24px;padding:8px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.chatbar input{flex:1;border:none;outline:none;font-size:15px;color:#202124}
-.chatbar input::placeholder{color:#80868b}
-.send{color:#1a73e8;font-size:15px;cursor:pointer;font-weight:500;padding:4px 8px;border-radius:8px}
-.send:hover{background:#f1f3f4}
-.ctx-btn{background:transparent;border:none;cursor:pointer;font-size:13px;color:#80868b;font-weight:500;padding:4px 10px;border-radius:16px;transition:all .15s;white-space:nowrap}
-.ctx-btn:hover{background:#f1f3f4;color:#202124}
+body{background:#f1f3f4;display:flex;align-items:center;justify-content:center;height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.p{width:280px;background:#fff;border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.12);font-size:13px;color:#202124}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.top img{width:28px;height:28px;border-radius:6px}
+.top .name{font-weight:500;font-size:14px}
+.toggle{display:flex;align-items:center;gap:10px;padding:12px;background:#f8f9fa;border-radius:10px;margin-bottom:12px}
+.toggle .state{font-size:16px;font-weight:500}
+.switch{position:relative;width:44px;height:24px;flex-shrink:0;background:#34a853;border-radius:12px}
+.switch:before{position:absolute;content:"";height:18px;width:18px;left:22px;top:3px;background:#fff;border-radius:50%}
+.stats{display:flex;gap:8px;margin-bottom:12px}
+.stat{flex:1;background:#f8f9fa;border-radius:8px;padding:8px;text-align:center}
+.stat .v{font-size:18px;font-weight:500;color:#1a73e8;line-height:1}
+.stat .l{font-size:10px;color:#5f6368;margin-top:2px}
+.section{font-size:10px;font-weight:500;color:#5f6368;letter-spacing:.3px;margin:4px 0}
+.app{display:flex;justify-content:space-between;font-size:11px;color:#5f6368;margin-bottom:1px}
+.app span:last-child{font-weight:500;color:#202124}
+.ins{font-size:11px;padding:8px;background:#f8f9fa;border-radius:8px;margin-bottom:4px;line-height:1.4}
+.ins .t{font-weight:500}
+.ins .d{color:#5f6368;font-size:10px}
+.pill{display:inline-block;background:#e8f0fe;color:#1a73e8;font-size:9px;font-weight:500;padding:1px 4px;border-radius:5px;margin-left:4px}
+.btn{display:block;width:100%;padding:9px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;font-weight:500;cursor:pointer;text-align:center;margin-top:8px}
+.btn:hover{box-shadow:0 1px 3px rgba(0,0,0,.12),0 2px 6px rgba(26,115,232,.25)}
+.btn.s{background:transparent;color:#1a73e8;margin-top:4px;font-size:12px}
 </style></head><body>
-
-<div class="top">
-  <div class="greeting">Good afternoon</div>
-  <div class="subtitle">How can Claude help you today?</div>
-</div>
-
-<div class="chatbar">
-  <button class="ctx-btn">Context</button>
-  <input placeholder="Ask anything…">
-  <span class="send">Send</span>
+<div class="p">
+  <div class="top"><img src="screenshot-icon.png"><span class="name">DayBrain</span></div>
+  <div class="toggle">
+    <div class="switch"></div>
+    <div><div class="state">Recording</div><div style="font-size:12px;color:#5f6368">activity & commitments</div></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">43m</div><div class="l">active</div></div>
+    <div class="stat"><div class="v">10</div><div class="l">switches</div></div>
+    <div class="stat"><div class="v">3</div><div class="l">caught</div></div>
+  </div>
+  <div class="section">Top apps</div>
+  <div class="app"><span>Cursor</span><span>21m</span></div>
+  <div class="app"><span>Notion</span><span>8m</span></div>
+  <div class="app"><span>GitHub</span><span>6m</span></div>
+  <div class="section" style="margin-top:8px">Detected</div>
+  <div class="ins"><div class="t">will deploy billing fix by Friday<span class="pill">80%</span></div><div class="d">Detected in Slack #engineering</div></div>
+  <div class="ins"><div class="t">promised to review PR #43<span class="pill">90%</span></div><div class="d">Detected in Slack #engineering</div></div>
+  <div class="ins"><div class="t">can you send the demo by EOD?<span class="pill">85%</span></div><div class="d">Detected in Slack #general. No task exists.</div></div>
+  <button class="btn">Copy context</button>
+  <button class="btn s">Refresh</button>
 </div>
 </body></html>

@@ -9,45 +9,41 @@ async function load() {
     const data = await res.json();
 
     if (!data.active_time) {
-      el.innerHTML = '<div class="empty">No activity yet today</div>';
+      el.innerHTML = '<div class="empty">No activity yet</div>';
       actions.style.display = 'none';
       return;
     }
 
-    const top3 = (data.top_apps || []).slice(0, 4);
+    const top3 = (data.top_apps || []).slice(0, 3);
     const insights = (data.insights || []).slice(0, 3);
 
     let h = '';
 
-    h += `<div class="card">
-      <div class="nums">
-        <div style="text-align:center"><div class="n">${data.active_time}m</div><div class="l">active</div></div>
-        <div style="text-align:center"><div class="n">${data.switch_count}</div><div class="l">switches</div></div>
-        <div style="text-align:center"><div class="n">${insights.length}</div><div class="l">caught</div></div>
-      </div>
+    h += `<div class="stats">
+      <div class="stat"><div class="v">${data.active_time}m</div><div class="l">active</div></div>
+      <div class="stat"><div class="v">${data.switch_count}</div><div class="l">switches</div></div>
+      <div class="stat"><div class="v">${insights.length}</div><div class="l">caught</div></div>
     </div>`;
 
     if (top3.length) {
-      h += '<div class="section">TOP APPS</div>';
-      top3.forEach(a => {
-        h += `<div class="app-row"><span>${esc(a.app)}</span><span>${a.minutes}m</span></div>`;
-      });
+      h += '<div class="section">Top apps</div>';
+      top3.forEach(a => h += `<div class="app"><span>${esc(a.app)}</span><span>${a.minutes}m</span></div>`);
     }
 
     if (insights.length) {
-      h += '<div class="section">THINGS YOU SAID</div>';
+      h += '<div class="section">Detected</div>';
       insights.forEach(i => {
-        h += `<div class="insight">
-          <div class="t">${esc(i.title||'').slice(0,60)}<span class="pill">${i.confidence}%</span></div>
-          <div class="d">${esc(i.description||'').slice(0,80)}</div>
+        h += `<div class="ins">
+          <div class="t">${esc(i.title||'').slice(0,55)}<span class="pill">${i.confidence}%</span></div>
+          <div class="d">${esc(i.description||'').slice(0,70)}</div>
         </div>`;
       });
     }
 
     el.innerHTML = h;
-    actions.style.display = 'flex';
+    actions.style.display = 'block';
   } catch {
-    el.innerHTML = '<div class="empty">Server not running<br><span style="font-size:10px">Start: npx daybrain</span></div>';
+    el.innerHTML = '<div class="empty">Server not running</div>';
     actions.style.display = 'none';
   }
 }
@@ -55,36 +51,45 @@ async function load() {
 function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
 
 // Recording toggle
-(async () => {
-  const result = await chrome.storage.local.get(['daybrain_paused']);
-  updatePauseUI(result.daybrain_paused);
-})();
+const toggle = document.getElementById('rec-toggle');
+const stateEl = document.getElementById('rec-state');
 
-document.getElementById('pause-btn').addEventListener('click', async () => {
-  const result = await chrome.storage.local.get(['daybrain_paused']);
-  const paused = !result.daybrain_paused;
-  await chrome.storage.local.set({ daybrain_paused: paused });
-  updatePauseUI(paused);
-  chrome.runtime.sendMessage({ action: 'toggle-recording', paused });
+chrome.storage.local.get(['daybrain_paused'], (r) => {
+  toggle.checked = !r.daybrain_paused;
+  updateState();
 });
 
-function updatePauseUI(paused) {
-  const dot = document.getElementById('rec-dot');
-  const label = document.getElementById('rec-label');
-  const btn = document.getElementById('pause-btn');
-  if (paused) {
-    dot.style.background = '#dadce0';
-    label.textContent = 'Paused';
-    btn.textContent = 'Resume';
-    btn.className = 'btn outline';
-  } else {
-    dot.style.background = '#34a853';
-    label.textContent = 'Recording';
-    btn.textContent = 'Pause';
-    btn.className = 'btn danger';
-  }
+toggle.addEventListener('change', async () => {
+  const paused = !toggle.checked;
+  await chrome.storage.local.set({ daybrain_paused: paused });
+  chrome.runtime.sendMessage({ action: 'toggle-recording', paused });
+  updateState();
+});
+
+function updateState() {
+  stateEl.textContent = toggle.checked ? 'Recording' : 'Paused';
+  stateEl.style.color = toggle.checked ? '#202124' : '#5f6368';
 }
 
+// Copy context
+document.getElementById('copy-btn').addEventListener('click', async () => {
+  try {
+    const res = await fetch(`${API}/context`);
+    const data = await res.json();
+    if (data.text) {
+      await navigator.clipboard.writeText(data.text);
+      toast('Copied');
+    }
+  } catch { toast('Server not running'); }
+});
+
 document.getElementById('refresh-btn').addEventListener('click', load);
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 1500);
+}
 
 load();

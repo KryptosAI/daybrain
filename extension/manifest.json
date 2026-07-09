@@ -4,30 +4,13 @@
   "version": "0.2.0",
   "description": "Private local memory for your AI. Gives Claude and ChatGPT context about your workday — no cloud required.",
   "homepage_url": "https://github.com/KryptosAI/daybrain",
-  "permissions": ["storage", "tabs", "scripting", "alarms"],
+  "permissions": ["storage", "tabs", "alarms"],
   "host_permissions": [
-    "https://claude.ai/*",
-    "https://chat.openai.com/*",
-    "https://chatgpt.com/*",
-    "https://chat.mistral.ai/*",
-    "https://gemini.google.com/*",
     "http://127.0.0.1:19840/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://claude.ai/*",
-        "https://chat.openai.com/*",
-        "https://chatgpt.com/*"
-      ],
-      "js": ["content.js"],
-      "css": ["sidebar.css"],
-      "run_at": "document_idle"
-    }
-  ],
   "action": {
     "default_popup": "popup.html",
     "default_title": "DayBrain",
