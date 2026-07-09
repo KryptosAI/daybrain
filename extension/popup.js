@@ -1,134 +1,90 @@
-const DEFAULT_API = 'http://127.0.0.1:19840';
-
-async function getApiUrl() {
-  const result = await chrome.storage.sync.get(['daybrain_api_url']);
-  return result.daybrain_api_url || DEFAULT_API;
-}
+const API = 'http://127.0.0.1:19840';
 
 async function load() {
-  const apiUrl = await getApiUrl();
-  const el = document.getElementById('stats');
+  const el = document.getElementById('content');
+  const actions = document.getElementById('actions');
+
   try {
-    const res = await fetch(`${apiUrl}/summary`);
+    const res = await fetch(`${API}/summary`);
     const data = await res.json();
 
-    if (data.active_time === 0) {
-      el.innerHTML = `<div class="stat">
-        <div class="stat-label">Today</div>
-        <div class="stat-value">—</div>
-        <div style="font-size: 11px; color: #888; margin-top: 4px;">No activity yet</div>
-      </div>`;
+    if (!data.active_time) {
+      el.innerHTML = '<div class="empty">No activity yet today</div>';
+      actions.style.display = 'none';
       return;
     }
 
-    let html = `<div class="stat">
-      <div class="stat-label">Active Today</div>
-      <div class="stat-value">${data.active_time} min</div>
+    const top3 = (data.top_apps || []).slice(0, 4);
+    const insights = (data.insights || []).slice(0, 3);
+
+    let h = '';
+
+    h += `<div class="card">
+      <div class="nums">
+        <div style="text-align:center"><div class="n">${data.active_time}m</div><div class="l">active</div></div>
+        <div style="text-align:center"><div class="n">${data.switch_count}</div><div class="l">switches</div></div>
+        <div style="text-align:center"><div class="n">${insights.length}</div><div class="l">caught</div></div>
+      </div>
     </div>`;
 
-    if (data.top_apps && data.top_apps.length > 0) {
-      html += `<div class="stat">
-        <div class="stat-label">Top App</div>
-        <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">${data.top_apps[0].app}</div>
-        <div style="font-size: 11px; color: #888;">${data.top_apps[0].minutes} min</div>
-      </div>`;
+    if (top3.length) {
+      h += '<div class="section">TOP APPS</div>';
+      top3.forEach(a => {
+        h += `<div class="app-row"><span>${esc(a.app)}</span><span>${a.minutes}m</span></div>`;
+      });
     }
 
-    if (data.switch_count > 0) {
-      html += `<div class="stat">
-        <div class="stat-label">Context Switches</div>
-        <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">${data.switch_count}</div>
-      </div>`;
+    if (insights.length) {
+      h += '<div class="section">THINGS YOU SAID</div>';
+      insights.forEach(i => {
+        h += `<div class="insight">
+          <div class="t">${esc(i.title||'').slice(0,60)}<span class="pill">${i.confidence}%</span></div>
+          <div class="d">${esc(i.description||'').slice(0,80)}</div>
+        </div>`;
+      });
     }
 
-    if (data.insights && data.insights.length > 0) {
-      html += `<div style="margin-top: 12px; font-weight: 600; font-size: 12px; color: #aaa;">Latest Insight</div>`;
-      const latest = data.insights[0];
-      html += `<div class="insight">
-        <div style="font-weight: 600;">${latest.type === 'commitment' ? '🤝' : latest.type === 'avoidance' ? '👀' : '💡'} ${(latest.title||'').slice(0, 80)}</div>
-        <div style="font-size: 11px; color: #aaa; margin-top: 2px;">${(latest.description||'').slice(0, 100)}</div>
-      </div>`;
-    }
-
-    el.innerHTML = html;
+    el.innerHTML = h;
+    actions.style.display = 'flex';
   } catch {
-    el.innerHTML = `<div class="err">
-      <div style="font-size: 24px; margin-bottom: 8px;">⚠️</div>
-      <div>DayBrain server not running</div>
-      <div style="font-size: 11px; color: #888; margin-top: 8px;">Start with: npx daybrain</div>
-      <div style="font-size: 10px; color: #666; margin-top: 4px;">API: ${apiUrl}</div>
-    </div>`;
+    el.innerHTML = '<div class="empty">Server not running<br><span style="font-size:10px">Start: npx daybrain</span></div>';
+    actions.style.display = 'none';
   }
 }
 
-document.getElementById('open-sidebar').addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab && tab.id) {
-    chrome.tabs.sendMessage(tab.id, { action: 'toggle-sidebar' });
-    window.close();
-  }
-});
-
-document.getElementById('toggle-settings-btn').addEventListener('click', () => {
-  document.getElementById('settings').classList.toggle('visible');
-});
+function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
 
 // Recording toggle
 (async () => {
   const result = await chrome.storage.local.get(['daybrain_paused']);
-  updatePauseButton(result.daybrain_paused);
+  updatePauseUI(result.daybrain_paused);
 })();
 
-document.getElementById('toggle-recording').addEventListener('click', async () => {
+document.getElementById('pause-btn').addEventListener('click', async () => {
   const result = await chrome.storage.local.get(['daybrain_paused']);
   const paused = !result.daybrain_paused;
   await chrome.storage.local.set({ daybrain_paused: paused });
-  updatePauseButton(paused);
+  updatePauseUI(paused);
   chrome.runtime.sendMessage({ action: 'toggle-recording', paused });
 });
 
-function updatePauseButton(paused) {
-  const btn = document.getElementById('toggle-recording');
+function updatePauseUI(paused) {
+  const dot = document.getElementById('rec-dot');
+  const label = document.getElementById('rec-label');
+  const btn = document.getElementById('pause-btn');
   if (paused) {
-    btn.textContent = '▶ Record';
-    btn.style.borderColor = '#4caf50';
-    btn.style.color = '#4caf50';
+    dot.style.background = '#dadce0';
+    label.textContent = 'Paused';
+    btn.textContent = 'Resume';
+    btn.className = 'btn outline';
   } else {
-    btn.textContent = '⏸ Pause';
-    btn.style.borderColor = '#e74c3c';
-    btn.style.color = '#e74c3c';
+    dot.style.background = '#34a853';
+    label.textContent = 'Recording';
+    btn.textContent = 'Pause';
+    btn.className = 'btn danger';
   }
 }
 
-document.getElementById('save-sync').addEventListener('click', async () => {
-  const url = document.getElementById('sync-url').value.trim();
-  if (url) {
-    await chrome.storage.sync.set({ daybrain_api_url: url });
-    showToast('Sync URL saved');
-  } else {
-    await chrome.storage.sync.remove('daybrain_api_url');
-    showToast('Reset to localhost');
-  }
-  load();
-});
+document.getElementById('refresh-btn').addEventListener('click', load);
 
-// Load saved URL on popup open
-(async () => {
-  const saved = await chrome.storage.sync.get(['daybrain_api_url']);
-  if (saved.daybrain_api_url) {
-    document.getElementById('sync-url').value = saved.daybrain_api_url;
-  }
-  load();
-})();
-
-function showToast(msg) {
-  const toast = document.createElement('div');
-  toast.textContent = msg;
-  Object.assign(toast.style, {
-    position: 'fixed', bottom: '10px', left: '50%', transform: 'translateX(-50%)',
-    background: '#333', color: 'white', padding: '6px 14px', borderRadius: '6px',
-    fontSize: '12px', zIndex: '9999',
-  });
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 1500);
-}
+load();
