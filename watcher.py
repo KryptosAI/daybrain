@@ -65,7 +65,7 @@ def main():
         new_app = result.get("app", "")
         new_title = result.get("title", "")
 
-        changed = new_app != current_app or (new_title and new_title != current_title)
+        changed = new_app != current_app or new_title != current_title
 
         if changed and current_app:
             duration = time.time() - current_start
@@ -90,7 +90,7 @@ def main():
             current_title = new_title
             current_start = time.time()
             last_emit = time.time()
-        elif current_app and current_title and (time.time() - last_emit) >= emit_interval:
+        elif current_app and (time.time() - last_emit) >= emit_interval:
             duration = time.time() - current_start
             print(
                 json.dumps(
