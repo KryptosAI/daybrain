@@ -10,7 +10,7 @@
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; color: #f7f5ff; background: radial-gradient(circle at 20% 0%, #342363 0, #171326 40%, #0c0a12 100%); }
     main { width: min(920px, calc(100% - 40px)); margin: 0 auto; padding: 88px 0 64px; }
-    .mark { display: inline-grid; place-items: center; width: 58px; height: 58px; border-radius: 18px; font-size: 30px; background: #8b5cf6; box-shadow: 0 18px 50px #8b5cf655; }
+    .mark { display: block; width: 84px; height: 84px; border-radius: 22px; box-shadow: 0 18px 50px #5648ff66; }
     h1 { margin: 28px 0 18px; max-width: 760px; font-size: clamp(44px, 8vw, 76px); line-height: .98; letter-spacing: -.055em; }
     .lead { max-width: 670px; margin: 0; color: #cbc5dc; font-size: clamp(19px, 3vw, 24px); line-height: 1.55; }
     .actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 34px 0 56px; }
@@ -27,7 +27,7 @@
 </head>
 <body>
   <main>
-    <div class="mark" aria-hidden="true">🧠</div>
+    <img class="mark" src="logo.png" width="84" height="84" alt="DayBrain logo">
     <h1>Your AI knows the internet. DayBrain helps it know your workday.</h1>
     <p class="lead">DayBrain is a private, local memory layer for AI assistants. It records useful work context on your machine and makes it available when you need it—without sending your activity to a hosted DayBrain account.</p>
     <div class="actions">
