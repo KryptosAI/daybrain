@@ -13,6 +13,6 @@ if (!fs.existsSync(distPath)) {
 const { main } = require(distPath);
 
 main().catch((err) => {
-  console.error('[opencontext] Fatal error:', err instanceof Error ? err.message : String(err));
+  console.error('[daybrain] Fatal error:', err instanceof Error ? err.message : String(err));
   process.exit(1);
 });
