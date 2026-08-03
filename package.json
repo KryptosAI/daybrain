@@ -1,6 +1,6 @@
 {
   "name": "daybrain",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Private local memory for your AI. Gives Claude, Cursor, and ChatGPT context about your workday — no cloud required.",
   "type": "commonjs",
   "main": "dist/index.js",
