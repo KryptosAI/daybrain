@@ -61,4 +61,4 @@ This policy may be updated. Changes will be reflected in the GitHub repository.
 ## Contact
 
 For privacy questions, open an issue at:
-https://github.com/daybrainhq/daybrain
+https://github.com/KryptosAI/daybrain
